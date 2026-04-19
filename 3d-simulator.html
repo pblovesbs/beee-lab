@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MachineSim Pro — 3D Electrical Machines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<link rel="stylesheet" href="style-3d.css">
+</head>
+<body>
+
+<div id="canvas-container"></div>
+<div id="labels-container"></div>
+<div id="tooltip">Component</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-icon">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+  </div>
+  <div>
+    <div class="logo-text">Machine<span>Sim</span></div>
+    <div class="logo-sub">3D Simulator</div>
+  </div>
+
+  <div class="header-divider"></div>
+
+  <div class="machine-selector-wrap">
+    <button id="machine-btn" onclick="toggleMachineMenu()">
+      <span id="current-machine-label">Select Machine…</span>
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+    </button>
+    <div class="machine-dropdown hidden" id="machine-dropdown">
+      <div class="machine-dropdown-inner" id="machine-list"></div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <a href="index.html" class="hbtn">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </a>
+    <button class="hbtn" onclick="window.location.reload()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+      Reset
+    </button>
+    <div class="legend-wrap">
+      <button class="hbtn" id="legend-btn" onclick="toggleLegend()">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h7"/></svg>
+        Parts
+      </button>
+      <div class="legend-dropdown hidden" id="legend-dropdown">
+        <div class="legend-header-bar">Double-click any part to spotlight</div>
+        <div class="legend-inner" id="component-list"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- LEFT PANEL -->
+<div id="left-panel">
+  <!-- Toggle Tab -->
+  <button id="panel-toggle" onclick="togglePanel()" title="Toggle Panel">
+    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/></svg>
+  </button>
+
+  <!-- Stage Navigation -->
+  <div class="stage-nav">
+    <button class="stage-nav-btn" onclick="changeChapter(-1)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 15l7-7 7 7"/></svg>
+    </button>
+    <div class="stage-counter">Stage <span id="stage-current">1</span> / <span id="stage-total">1</span></div>
+    <button class="stage-nav-btn" onclick="changeChapter(1)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+    </button>
+  </div>
+
+  <!-- Story -->
+  <div id="story-container"></div>
+</div>
+
+<!-- BOTTOM DOCK -->
+<div id="dock">
+  <div class="dock-inner">
+    <button id="power-btn" class="on" onclick="togglePower()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      <span id="power-label">POWER ON</span>
+    </button>
+
+    <div class="dock-divider"></div>
+
+    <div class="speed-wrap">
+      <div class="speed-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+      <input type="range" id="speed-slider" min="0.1" max="10" step="0.1" value="2.0">
+      <div class="speed-val" id="speed-val">2.0×</div>
+    </div>
+
+    <div class="dock-divider"></div>
+
+    <button id="circuit-btn" onclick="toggleCircuits()">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>
+      <span id="circuit-btn-text">View Circuits</span>
+    </button>
+  </div>
+</div>
+
+<!-- FOCUS BANNER -->
+<div id="focus-banner">
+  <div class="focus-inner">
+    <div class="focus-pulse"></div>
+    <div class="focus-label">Spotlight</div>
+    <div class="focus-name" id="focus-name">Component</div>
+    <button class="focus-close" onclick="clearFocusMode(true)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- CONTROLS HINT -->
+<div id="controls-hint">
+  <div class="hint-row"><span class="hint-key">Drag</span> Orbit</div>
+  <div class="hint-row"><span class="hint-key">Scroll</span> Zoom</div>
+  <div class="hint-row"><span class="hint-key">R-Drag</span> Pan</div>
+  <div class="hint-row"><span class="hint-key em">Dbl-click</span> Focus</div>
+</div>
+
+<!-- EXPLODE INDICATOR -->
+<div id="explode-bar">
+  <div class="explode-label">Explode</div>
+  <div class="explode-track">
+    <div class="explode-fill" id="explode-fill" style="height:0%"></div>
+  </div>
+</div>
+
+<!-- STATUS PILLS -->
+<div id="status-bar">
+  <div class="status-pill"><div class="status-dot green"></div><span id="machine-status">DC Motor · Running</span></div>
+  <div class="status-pill"><div class="status-dot blue"></div><span id="speed-status">Speed: 2.0×</span></div>
+</div>
+
+<!-- JS: Engine first (defines builders), then App (uses them) -->
+<script src="engine-3d.js"></script>
+<script src="app-3d.js"></script>
+</body>
+</html>

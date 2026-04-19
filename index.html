@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BEEE Interactive 2D Simulator</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Inter:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style-2d.css">
+</head>
+
+<body>
+
+    <div id="login-screen" class="screen active">
+        <div class="title-glitch">BEEE MACHINE SIMULATOR</div>
+        <p
+            style="color:var(--text-dim); margin-bottom:50px; font-family:var(--font-mono); max-width:700px; line-height:1.6; font-size: 1rem;">
+            Select your environment. The 2D Engine provides intricate circuit-level visualization, fluid mathematical
+            precision, and deep theoretical overlays. The 3D Engine offers spatial awareness and immersive physical
+            models.
+        </p>
+        <div class="portal-container">
+            <div class="portal-card" onclick="navTo('home')">
+                <div class="portal-icon">📐</div>
+                <h2>2D INTRICATE MODELS</h2>
+                <p>Dive deep into detailed cross-sections, magnetic flux pathings, equivalent circuits, responsive
+                    parameters, and real-time fluid mathematical visualizations.</p>
+            </div>
+            <a href="3d-simulator.html" class="portal-card">
+                <div class="portal-icon">🌌</div>
+                <h2>3D IMMERSIVE ENGINE</h2>
+                <p>Explore full mechanical assemblies, physical rotational dynamics, and external physical interactions
+                    in completely interactive 3D space.</p>
+            </a>
+        </div>
+    </div>
+
+    <div id="home-screen" class="screen">
+        <header>
+            <div class="logo">⚡ BEEE 2D LAB</div>
+            <button class="btn-back" onclick="navTo('login')">⏻ Logout</button>
+        </header>
+
+        <div class="device-grid" id="grid-container">
+        </div>
+    </div>
+
+    <div id="device-screen" class="screen">
+        <header>
+            <div class="logo" id="dev-logo">⚡ DEVICE LAB</div>
+            <button class="btn-back" onclick="navTo('home')">← Dashboard</button>
+        </header>
+
+        <div class="workspace" style="margin-top: 25px;">
+            <div class="canvas-panel">
+                <div class="canvas-header">
+                    <h2 id="dev-title">Device Name</h2>
+                    <div class="canvas-actions">
+                        <button class="btn-refresh" onclick="resetCurrentDevice()" title="Reset Parameters">↺
+                            Reset</button>
+                        <button class="btn-theory" onclick="toggleTheory(true)">📖 Deep Theory</button>
+                    </div>
+                </div>
+                <div class="canvas-wrapper" id="canvas-wrap">
+                    <canvas id="simCanvas"></canvas>
+                    <div id="canvas-tooltip">Hover Info</div>
+                </div>
+                <div class="status-bar" id="status-container">
+                </div>
+            </div>
+
+            <div class="controls-panel">
+                <div class="controls-title">
+                    <span>⚙️ Dynamic Parameters</span>
+                </div>
+                <div id="controls-container">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="theory-overlay">
+        <div class="theory-header">
+            <h2>Theoretical Principles</h2>
+            <button class="btn-close" onclick="toggleTheory(false)">✕</button>
+        </div>
+        <div class="theory-content" id="theory-content">
+        </div>
+    </div>
+
+    <script src="app-2d.js"></script>
+</body>
+
+</html>
